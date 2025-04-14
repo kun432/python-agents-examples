@@ -1,3 +1,15 @@
+# LiveKit Agents サンプル（日本語版）
+
+**本レポジトリは、[LiveKit Agents Examples (https://github.com/livekit-examples/python-agents-examples)](https://github.com/livekit-examples/python-agents-examples) のサンプルコードを日本語化しているものです。**
+
+**重要**
+
+- 日本語化作業中です。
+- 基本的な動作は変えずに、メッセージ等を日本語化します。
+
+以下、オリジナルのREADME.mdです。
+
+---
 
 <div style='text-align: center; margin-bottom: 1rem; display: flex; justify-content: center; align-items: center;'>
     <h1 style='color: white; margin: 0;'>LiveKit Agents Examples</h1>
