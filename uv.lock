@@ -783,6 +783,7 @@ dependencies = [
     { name = "livekit-plugins-elevenlabs" },
     { name = "livekit-plugins-google" },
     { name = "livekit-plugins-groq" },
+    { name = "livekit-plugins-noise-cancellation" },
     { name = "livekit-plugins-openai" },
     { name = "livekit-plugins-playai" },
     { name = "livekit-plugins-rime" },
@@ -816,6 +817,7 @@ requires-dist = [
     { name = "livekit-plugins-elevenlabs", specifier = ">=1.0.0rc9" },
     { name = "livekit-plugins-google", specifier = ">=1.0.0rc9" },
     { name = "livekit-plugins-groq", specifier = ">=1.0.0rc9" },
+    { name = "livekit-plugins-noise-cancellation", specifier = "~=0.2" },
     { name = "livekit-plugins-openai", specifier = ">=1.0.0rc9" },
     { name = "livekit-plugins-playai", specifier = ">=1.0.0rc9" },
     { name = "livekit-plugins-rime", specifier = ">=1.0.0rc9" },
@@ -934,6 +936,20 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/7d/b6/b1be4a7c235221cf117d49a9c45f21b6e7caa9da37cdb032e1764df8570e/livekit_plugins_groq-1.0.11.tar.gz", hash = "sha256:b9e62d0866be88dc3933c825c5331fdc1f5d38226178dee268ce4ac32cbefe73", size = 5807 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/13/aa/f0c03ced72be959d0a27a0cd2d613b1dea52c7571a6360a262de9010f864/livekit_plugins_groq-1.0.11-py3-none-any.whl", hash = "sha256:4f603a59f0bb6520eab62fd80149e9ddb284d37f08c516d54958316bdc330ea9", size = 6773 },
+]
+
+[[package]]
+name = "livekit-plugins-noise-cancellation"
+version = "0.2.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "livekit" },
+]
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b4/a4/8cefb5597e0668783bca971d1a8d90759db33cab04b8b8333b92b143cb0a/livekit_plugins_noise_cancellation-0.2.1-py3-none-macosx_10_9_x86_64.whl", hash = "sha256:d5b26b064f878205ac1f3a2956594cbbd946f1780939b427973f53552c7ab1c2", size = 39772748 },
+    { url = "https://files.pythonhosted.org/packages/fc/a4/2b03f1680248ed568fea7b4cedf1f5385ddf3e44bc030fcc72485dee037d/livekit_plugins_noise_cancellation-0.2.1-py3-none-macosx_11_0_arm64.whl", hash = "sha256:79766363aada1ae1d04d7c4ee7ce8604e6a7cfbde241b768d285b257d767c934", size = 38315406 },
+    { url = "https://files.pythonhosted.org/packages/8b/a6/7fe59d703e4a67d50868efc26de59895bad2796730a8b6224a940401a2bf/livekit_plugins_noise_cancellation-0.2.1-py3-none-manylinux_2_28_aarch64.whl", hash = "sha256:8560df698a88731b16a1e09b5a97d4964f8b9ad4bd7b865d6cc031e017a67e08", size = 43917872 },
+    { url = "https://files.pythonhosted.org/packages/86/82/bc86c24feb1c98d4aaf98e3ccc9457c56764fe0d8e3b4ae4bd04989918c1/livekit_plugins_noise_cancellation-0.2.1-py3-none-manylinux_2_28_x86_64.whl", hash = "sha256:2ca8d1ac55223b19690653a0346ded60b769c23ce9ac2f40a56a0c146baed9fb", size = 47030709 },
 ]
 
 [[package]]
