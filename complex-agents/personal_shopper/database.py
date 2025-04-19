@@ -1,40 +1,41 @@
-import sqlite3
-import os
 import json
-from typing import List, Dict, Optional, Any
 import logging
+import os
+import sqlite3
+from typing import Any
 
 logger = logging.getLogger("personal-shopper-db")
 logger.setLevel(logging.INFO)
 
+
 class CustomerDatabase:
     def __init__(self, db_path: str = None):
-        """Initialize the customer database."""
+        """顧客データベースを初期化します。"""
         if db_path is None:
-            # Use a default path in the same directory as this file
+            # このファイルと同じディレクトリにデフォルトのパスを使用
             script_dir = os.path.dirname(os.path.abspath(__file__))
-            db_path = os.path.join(script_dir, 'customer_data.db')
-        
+            db_path = os.path.join(script_dir, "customer_data_ja.db")
+
         self.db_path = db_path
         self._initialize_db()
-    
+
     def _initialize_db(self):
-        """Create the database and tables if they don't exist."""
+        """データベースとテーブルが存在しない場合は作成します。"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        
-        # Create customers table
-        cursor.execute('''
+
+        # customersテーブルを作成
+        cursor.execute("""
         CREATE TABLE IF NOT EXISTS customers (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             first_name TEXT NOT NULL,
             last_name TEXT NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
-        ''')
-        
-        # Create orders table
-        cursor.execute('''
+        """)
+
+        # ordersテーブルを作成
+        cursor.execute("""
         CREATE TABLE IF NOT EXISTS orders (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             customer_id INTEGER NOT NULL,
@@ -42,123 +43,142 @@ class CustomerDatabase:
             order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (customer_id) REFERENCES customers (id)
         )
-        ''')
-        
+        """)
+
         conn.commit()
         conn.close()
-        logger.info(f"Database initialized at {self.db_path}")
-    
+        logger.info(f"データベースを初期化しました: {self.db_path}")
+
     def get_or_create_customer(self, first_name: str, last_name: str) -> int:
-        """Get a customer by name or create if not exists. Returns customer ID."""
+        """
+        顧客を名前で検索し、存在しない場合は新規作成します。顧客IDを返します。
+
+        Args:
+            first_name: 顧客の名
+            last_name: 顧客の姓
+
+        Returns:
+            int: 顧客ID
+        """
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        
-        # Check if customer exists
-        cursor.execute(
-            "SELECT id FROM customers WHERE first_name = ? AND last_name = ?", 
-            (first_name, last_name)
-        )
+
+        # 顧客が存在するか確認
+        cursor.execute("SELECT id FROM customers WHERE first_name = ? AND last_name = ?", (first_name, last_name))
         result = cursor.fetchone()
-        
+
         if result:
             customer_id = result[0]
-            logger.info(f"Found existing customer: {first_name} {last_name} (ID: {customer_id})")
+            logger.info(f"既存の顧客が見つかりました: {last_name} {first_name} (ID: {customer_id})")
         else:
-            # Create new customer
-            cursor.execute(
-                "INSERT INTO customers (first_name, last_name) VALUES (?, ?)",
-                (first_name, last_name)
-            )
+            # 新規顧客を作成
+            cursor.execute("INSERT INTO customers (first_name, last_name) VALUES (?, ?)", (first_name, last_name))
             customer_id = cursor.lastrowid
-            logger.info(f"Created new customer: {first_name} {last_name} (ID: {customer_id})")
-        
+            logger.info(f"新規顧客を作成しました: {last_name} {first_name} (ID: {customer_id})")
+
         conn.commit()
         conn.close()
         return customer_id
-    
-    def add_order(self, customer_id: int, order_details: Dict[str, Any]) -> int:
-        """Add a new order for a customer. Returns order ID."""
+
+    def add_order(self, customer_id: int, order_details: dict[str, Any]) -> int:
+        """
+        顧客の新規注文を追加します。注文IDを返します。
+
+        Args:
+            customer_id: 顧客ID
+            order_details: 注文の詳細情報を含む辞書
+
+        Returns:
+            int: 注文ID
+        """
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        
-        # Convert order details to JSON string
+
+        # 注文詳細をJSON文字列に変換
         order_json = json.dumps(order_details)
-        
-        cursor.execute(
-            "INSERT INTO orders (customer_id, order_details) VALUES (?, ?)",
-            (customer_id, order_json)
-        )
-        
+
+        cursor.execute("INSERT INTO orders (customer_id, order_details) VALUES (?, ?)", (customer_id, order_json))
+
         order_id = cursor.lastrowid
-        logger.info(f"Added new order (ID: {order_id}) for customer ID: {customer_id}")
-        
+        logger.info(f"顧客ID: {customer_id} の新規注文 (ID: {order_id}) を追加しました")
+
         conn.commit()
         conn.close()
         return order_id
-    
-    def get_customer_orders(self, customer_id: int) -> List[Dict[str, Any]]:
-        """Get all orders for a customer."""
+
+    def get_customer_orders(self, customer_id: int) -> list[dict[str, Any]]:
+        """
+        顧客の全注文を取得します。
+
+        Args:
+            customer_id: 顧客ID
+
+        Returns:
+            List[Dict[str, Any]]: 注文情報のリスト
+        """
         conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row  # This enables column access by name
+        conn.row_factory = sqlite3.Row  # カラム名でアクセスできるようにする
         cursor = conn.cursor()
-        
+
         cursor.execute(
             "SELECT id, order_details, order_date FROM orders WHERE customer_id = ? ORDER BY order_date DESC",
-            (customer_id,)
+            (customer_id,),
         )
-        
+
         orders = []
         for row in cursor.fetchall():
-            order_data = json.loads(row['order_details'])
-            orders.append({
-                'id': row['id'],
-                'date': row['order_date'],
-                'details': order_data
-            })
-        
+            order_data = json.loads(row["order_details"])
+            orders.append({"id": row["id"], "date": row["order_date"], "details": order_data})
+
         conn.close()
         return orders
-    
+
     def get_customer_order_history(self, first_name: str, last_name: str) -> str:
-        """Get a formatted string of customer order history for LLM consumption."""
+        """
+        顧客の注文履歴を取得し、LLM用にフォーマットした文字列を返します。
+
+        Args:
+            first_name: 顧客の名
+            last_name: 顧客の姓
+
+        Returns:
+            str: フォーマットされた注文履歴
+        """
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        
-        # Get customer ID
-        cursor.execute(
-            "SELECT id FROM customers WHERE first_name = ? AND last_name = ?", 
-            (first_name, last_name)
-        )
+
+        # 顧客IDを取得
+        cursor.execute("SELECT id FROM customers WHERE first_name = ? AND last_name = ?", (first_name, last_name))
         result = cursor.fetchone()
-        
+
         if not result:
             conn.close()
-            return "No order history found for this customer."
-        
+            return "この顧客の注文履歴は見つかりませんでした。"
+
         customer_id = result[0]
         orders = self.get_customer_orders(customer_id)
-        
+
         if not orders:
-            return f"Customer {first_name} {last_name} has no previous orders."
-        
-        # Format order history for LLM
-        history = f"Order history for {first_name} {last_name}:\n\n"
-        
+            return f"顧客 {last_name} {first_name} の注文履歴はありません。"
+
+        # 注文履歴をフォーマット
+        history = f"顧客 {last_name} {first_name} の注文履歴:\n\n"
+
         for order in orders:
-            history += f"Order #{order['id']} (Date: {order['date']}):\n"
-            details = order['details']
-            
-            if 'items' in details:
-                for item in details['items']:
-                    history += f"- {item.get('quantity', 1)}x {item.get('name', 'Unknown Item')}"
-                    if 'price' in item:
-                        history += f" (${item['price']})"
+            history += f"注文 #{order['id']} (日時: {order['date']}):\n"
+            details = order["details"]
+
+            if "items" in details:
+                for item in details["items"]:
+                    history += f"- {item.get('quantity', 1)}x {item.get('name', '不明な商品')}"
+                    if "price" in item:
+                        history += f" (¥{item['price']})"
                     history += "\n"
             else:
-                # Handle case where order details might be in a different format
+                # 注文詳細が異なるフォーマットの場合の処理
                 history += f"- {json.dumps(details)}\n"
-            
+
             history += "\n"
-        
+
         conn.close()
-        return history 
+        return history

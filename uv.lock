@@ -771,7 +771,7 @@ images = [
 ]
 
 [[package]]
-name = "livekit-agents-examples-jas"
+name = "livekit-agents-examples-ja"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
