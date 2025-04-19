@@ -21,6 +21,8 @@
   - Agents Playgroundがおすすめ。
   - https://github.com/livekit/agents-playground
 
+### エージェントの実行
+
 本ディレクトリで以下を実行
 
 1. `.env.local` をコピーして、`.env` を作成。
