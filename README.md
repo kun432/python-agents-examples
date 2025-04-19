@@ -7,6 +7,20 @@
 - 日本語化作業中です。
 - 基本的な動作は変えずに、メッセージ等を日本語化します。
 
+### 使い方
+
+事前にuvをインストールしておく
+
+```shell
+git clone https://github.com/kun432/python-agents-examples
+cd python-agents-examples
+uv sync
+```
+
+あとは各サンプルのディレクトリに移動して、エージェントを実行
+
+---
+
 以下、オリジナルのREADME.mdです。
 
 ---
